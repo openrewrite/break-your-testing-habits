@@ -164,3 +164,69 @@ AssertJ provides better diff output for multi-line strings and offers flexible c
 
 </TabItem>
 </Tabs>
+
+## SequencedCollection
+
+Java 21 introduced `SequencedCollection`, `SequencedSet`, and `SequencedMap` interfaces that provide uniform access to first and last elements.
+Before Java 21, accessing the last element required verbose index calculations. AssertJ 3.25.0+ provides dedicated assertions for these collections.
+
+<Tabs>
+<TabItem value="before" label="Before">
+
+```java title="SequencedCollectionTest.java"
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class SequencedCollectionTest {
+    @Test
+    void lastElement() {
+        List<String> authors = List.of(
+                "Joshua Bloch",
+                "Brian Goetz",
+                "Robert C. Martin"
+        );
+        assertThat(authors.get(authors.size() - 1)).isEqualTo("Robert C. Martin");
+    }
+}
+```
+
+:::warning
+
+Accessing the last element with `get(size() - 1)` is verbose and requires mental overhead to understand the intent. It's also prone to off-by-one errors.
+
+:::
+
+</TabItem>
+<TabItem value="after" label="After">
+
+```java title="SequencedCollectionTest.java"
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class SequencedCollectionTest {
+    @Test
+    void lastElement() {
+        List<String> authors = List.of(
+                "Joshua Bloch",
+                "Brian Goetz",
+                "Robert C. Martin"
+        );
+        assertThat(authors).last().isEqualTo("Robert C. Martin");
+    }
+}
+```
+
+:::tip
+
+AssertJ's `last()` method is clear and expressive. It works with any `SequencedCollection` (including `List`, `Deque`, `LinkedHashSet`) and provides better failure messages. There's also a `first()` method for accessing the first element.
+
+:::
+
+</TabItem>
+</Tabs>
