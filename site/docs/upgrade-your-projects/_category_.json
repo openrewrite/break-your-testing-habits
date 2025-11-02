@@ -1,0 +1,8 @@
+{
+  "label": "Upgrade your projects",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "Update your own projects to adopt better testing practices."
+  }
+}

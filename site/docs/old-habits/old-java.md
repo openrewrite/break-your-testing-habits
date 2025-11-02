@@ -230,3 +230,8 @@ AssertJ's `last()` method is clear and expressive. It works with any `SequencedC
 
 </TabItem>
 </Tabs>
+
+## Adopting Java 21+ features in your tests
+
+You can use OpenRewrite to automatically migrate your tests to use Java 21 features like text blocks and `SequencedCollection` assertions.
+See [Java 21 for tests](../upgrade-your-projects/java-21-for-tests.md) guide for detailed instructions on setting this up in your project.
