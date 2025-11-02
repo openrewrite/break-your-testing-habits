@@ -388,8 +388,8 @@ When you have multiple test methods that all need to operate on the same object 
 
 ### Understanding the use case
 
-Imagine you're testing various aspects of a `Customer` object—checking if it's not null, has a valid title, has an author, etc. Each test method currently creates the same `Customer` instance. To test with different customers, you face two unappealing options:
-1. Duplicate the entire test class for each customer you want to test
+Imagine you're testing various aspects of a `Book` object—checking if it's not null, has a valid title, has an author, etc. Each test method currently creates the same `Book` instance. To test with different books, you face two unappealing options:
+1. Duplicate the entire test class for each book you want to test
 2. Convert every test method to use `@ParameterizedTest`, adding complexity to each method
 
 `@ParameterizedClass` solves this by parameterizing the entire class: you write your test suite once, and it automatically runs against multiple object instances. Think of it as "`@ParameterizedTest` for an entire class."

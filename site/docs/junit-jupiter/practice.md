@@ -1,5 +1,5 @@
 ---
-sidebar_position: 6
+sidebar_position: 5
 ---
 
 # Practice: Migrate to JUnit 5
@@ -30,7 +30,7 @@ Migrate this test to JUnit 5 and improve the test patterns.
 
 ### Running the test
 
-You can run the test in your IDE or use the following commands: 
+You can run the test in your IDE or use the following commands:
 
 ```bash
 # Run the test
