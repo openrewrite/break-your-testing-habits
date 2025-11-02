@@ -388,8 +388,8 @@ When you have multiple test methods that all need to operate on the same object 
 
 ### Understanding the use case
 
-Imagine you're testing various aspects of a `Customer` object—checking if it's not null, has a valid title, has an author, etc. Each test method currently creates the same `Customer` instance. To test with different customers, you face two unappealing options:
-1. Duplicate the entire test class for each customer you want to test
+Imagine you're testing various aspects of a `ShoppingCart` object—checking if it calculates totals correctly, applies discounts properly, handles taxes, etc. Each test method currently creates the same cart configuration. To test with different cart scenarios, you face two unappealing options:
+1. Duplicate the entire test class for each cart scenario you want to test
 2. Convert every test method to use `@ParameterizedTest`, adding complexity to each method
 
 `@ParameterizedClass` solves this by parameterizing the entire class: you write your test suite once, and it automatically runs against multiple object instances. Think of it as "`@ParameterizedTest` for an entire class."
@@ -406,90 +406,97 @@ With `@ParameterizedClass`:
 <Tabs>
 <TabItem value="problem" label="Without @ParameterizedClass">
 
-```java title="BookTest.java"
-import com.github.timtebeek.books.Book;
+```java title="ShoppingCartTest.java"
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class BookTest {
+class ShoppingCartTest {
 
     @Test
-    void bookIsNotNull() {
-        Book book = new Book("Effective Java", "Joshua Bloch", 2001);
-        assertThat(book).isNotNull();
+    void cartIsNotNull() {
+        ShoppingCart cart = new ShoppingCart(new BigDecimal("100.00"), new BigDecimal("0.10"));
+        assertThat(cart).isNotNull();
     }
 
     @Test
-    void bookHasTitle() {
-        Book book = new Book("Effective Java", "Joshua Bloch", 2001);
-        assertThat(book.getTitle()).isNotBlank();
+    void cartCalculatesSubtotal() {
+        ShoppingCart cart = new ShoppingCart(new BigDecimal("100.00"), new BigDecimal("0.10"));
+        assertThat(cart.getSubtotal()).isEqualByComparingTo(new BigDecimal("100.00"));
     }
 
     @Test
-    void bookHasAuthor() {
-        Book book = new Book("Effective Java", "Joshua Bloch", 2001);
-        assertThat(book.getAuthor()).isNotBlank();
+    void cartAppliesDiscount() {
+        ShoppingCart cart = new ShoppingCart(new BigDecimal("100.00"), new BigDecimal("0.10"));
+        assertThat(cart.getDiscount()).isEqualByComparingTo(new BigDecimal("10.00"));
     }
 
     @Test
-    void bookHasYear() {
-        Book book = new Book("Effective Java", "Joshua Bloch", 2001);
-        assertThat(book.getYear()).isPositive();
+    void cartCalculatesTotal() {
+        ShoppingCart cart = new ShoppingCart(new BigDecimal("100.00"), new BigDecimal("0.10"));
+        assertThat(cart.getTotal()).isEqualByComparingTo(new BigDecimal("90.00"));
     }
 }
 ```
 
 :::warning
 
-Every test method creates the same `Book` instance. To test multiple books, you'd need to duplicate the entire test class or use `@ParameterizedTest` on each method individually.
+Every test method creates the same `ShoppingCart` instance. To test multiple cart scenarios, you'd need to duplicate the entire test class or use `@ParameterizedTest` on each method individually.
 
 :::
 
 </TabItem>
 <TabItem value="solution" label="With @ParameterizedClass">
 
-```java title="BookTest.java"
-import com.github.timtebeek.books.Book;
+```java title="ShoppingCartTest.java"
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedClass;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ParameterizedClass
 @CsvSource({
-    "Effective Java, Joshua Bloch, 2001",
-    "Java Concurrency in Practice, Brian Goetz, 2006",
-    "Clean Code, Robert C. Martin, 2008"
+    "100.00, 0.10, 10.00, 90.00",   // 10% discount
+    "250.00, 0.20, 50.00, 200.00",  // 20% discount
+    "50.00, 0.00, 0.00, 50.00"      // No discount
 })
-class BookTest {
+class ShoppingCartTest {
 
-    private final Book book;
+    private final ShoppingCart cart;
+    private final BigDecimal expectedDiscount;
+    private final BigDecimal expectedTotal;
 
     // Constructor injection: parameters are injected via the constructor
-    BookTest(String title, String author, int year) {
-        this.book = new Book(title, author, year);
+    ShoppingCartTest(BigDecimal subtotal, BigDecimal discountRate, 
+                     BigDecimal expectedDiscount, BigDecimal expectedTotal) {
+        this.cart = new ShoppingCart(subtotal, discountRate);
+        this.expectedDiscount = expectedDiscount;
+        this.expectedTotal = expectedTotal;
     }
 
     @Test
-    void bookIsNotNull() {
-        assertThat(book).isNotNull();
+    void cartIsNotNull() {
+        assertThat(cart).isNotNull();
     }
 
     @Test
-    void bookHasTitle() {
-        assertThat(book.getTitle()).isNotBlank();
+    void cartCalculatesSubtotal() {
+        assertThat(cart.getSubtotal()).isPositive();
     }
 
     @Test
-    void bookHasAuthor() {
-        assertThat(book.getAuthor()).isNotBlank();
+    void cartAppliesDiscount() {
+        assertThat(cart.getDiscount()).isEqualByComparingTo(expectedDiscount);
     }
 
     @Test
-    void bookHasYear() {
-        assertThat(book.getYear()).isPositive();
+    void cartCalculatesTotal() {
+        assertThat(cart.getTotal()).isEqualByComparingTo(expectedTotal);
     }
 }
 ```
@@ -497,9 +504,9 @@ class BookTest {
 :::tip
 
 With `@ParameterizedClass`:
-- All 4 test methods run for each of the 3 customers = 12 test executions total
-- No duplication of the `Customer` instance creation
-- Easy to add more customers by adding a line to `@CsvSource`
+- All 4 test methods run for each of the 3 cart scenarios = 12 test executions total
+- No duplication of the `ShoppingCart` instance creation
+- Easy to add more scenarios by adding a line to `@CsvSource`
 - All tests stay organized in one class
 
 :::
@@ -514,24 +521,34 @@ With `@ParameterizedClass`:
 <Tabs>
 <TabItem value="constructor" label="Constructor Injection">
 
-```java title="BookTest.java"
+```java title="CalculatorTest.java"
 @ParameterizedClass
 @CsvSource({
-    "Effective Java, Joshua Bloch, 2001",
-    "Clean Code, Robert C. Martin, 2008"
+    "5, 3, 8, 2",
+    "10, 4, 14, 6",
+    "100, 25, 125, 75"
 })
-class BookTest {
+class CalculatorTest {
 
-    private final Book book;
+    private final Calculator calculator;
+    private final int expectedSum;
+    private final int expectedDifference;
 
     // Parameters injected via constructor
-    BookTest(String title, String author, int year) {
-        this.book = new Book(title, author, year);
+    CalculatorTest(int a, int b, int expectedSum, int expectedDifference) {
+        this.calculator = new Calculator(a, b);
+        this.expectedSum = expectedSum;
+        this.expectedDifference = expectedDifference;
     }
 
     @Test
-    void testBook() {
-        assertThat(book).isNotNull();
+    void testAddition() {
+        assertThat(calculator.add()).isEqualTo(expectedSum);
+    }
+
+    @Test
+    void testSubtraction() {
+        assertThat(calculator.subtract()).isEqualTo(expectedDifference);
     }
 }
 ```
@@ -545,29 +562,39 @@ Constructor injection is preferred when you want to initialize objects or perfor
 </TabItem>
 <TabItem value="field" label="Field Injection">
 
-```java title="BookTest.java"
+```java title="CalculatorTest.java"
 import org.junit.jupiter.params.Parameter;
 
 @ParameterizedClass
 @CsvSource({
-    "Effective Java, Joshua Bloch, 2001",
-    "Clean Code, Robert C. Martin, 2008"
+    "5, 3, 8, 2",
+    "10, 4, 14, 6",
+    "100, 25, 125, 75"
 })
-class BookTest {
+class CalculatorTest {
 
     @Parameter(0)
-    private String title;
+    private int a;
 
     @Parameter(1)
-    private String author;
+    private int b;
 
     @Parameter(2)
-    private int year;
+    private int expectedSum;
+
+    @Parameter(3)
+    private int expectedDifference;
 
     @Test
-    void testBook() {
-        Book book = new Book(title, author, year);
-        assertThat(book).isNotNull();
+    void testAddition() {
+        Calculator calculator = new Calculator(a, b);
+        assertThat(calculator.add()).isEqualTo(expectedSum);
+    }
+
+    @Test
+    void testSubtraction() {
+        Calculator calculator = new Calculator(a, b);
+        assertThat(calculator.subtract()).isEqualTo(expectedDifference);
     }
 }
 ```
@@ -585,7 +612,7 @@ Field injection with `@Parameter` is useful when you want direct access to indiv
 
 You can also use `@MethodSource` to provide complex objects directly:
 
-```java title="BookTest.java"
+```java title="UserValidatorTest.java"
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -594,25 +621,33 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.params.provider.Arguments.argumentSet;
 
 @ParameterizedClass
-@MethodSource("books")
-class BookTest {
+@MethodSource("users")
+class UserValidatorTest {
 
-    private final Book book;
+    private final User user;
+    private final boolean expectedValid;
 
-    BookTest(Book book) {
-        this.book = book;
+    UserValidatorTest(User user, boolean expectedValid) {
+        this.user = user;
+        this.expectedValid = expectedValid;
     }
 
-    static Stream<Arguments> books() {
+    static Stream<Arguments> users() {
         return Stream.of(
-            argumentSet("Effective Java", new Book("Effective Java", "Joshua Bloch", 2001)),
-            argumentSet("Clean Code", new Book("Clean Code", "Robert C. Martin", 2008))
+            argumentSet("valid user", new User("john@example.com", 25), true),
+            argumentSet("invalid email", new User("not-an-email", 25), false),
+            argumentSet("too young", new User("jane@example.com", 15), false)
         );
     }
 
     @Test
-    void testBook() {
-        assertThat(book).isNotNull();
+    void testUserValidation() {
+        assertThat(UserValidator.isValid(user)).isEqualTo(expectedValid);
+    }
+
+    @Test
+    void testUserIsNotNull() {
+        assertThat(user).isNotNull();
     }
 }
 ```
