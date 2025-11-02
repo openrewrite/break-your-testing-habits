@@ -17,11 +17,23 @@ This workshop consists of several sections, each focusing on a different aspect 
 
 ## Getting Started
 
+### Clone the repository
+
+To get started, clone the workshop repository:
+
+```bash
+git clone https://github.com/openrewrite/break-your-testing-habits.git
+cd break-your-testing-habits
+```
+
+This repository contains example code that you'll use throughout the workshop to explore the topics, write tests, and practice refactoring techniques.
+
+### Workshop structure
+
 We recommend going through the sections in order, but you're welcome to go at your own pace.
 There is a lot of material to cover, so feel free to take breaks and revisit sections as needed.
 
-There are sources included with this repository that support your exploration of the topics,
-but you're just as welcome to use your own projects to try out the improvements.
+You're also welcome to use your own projects to try out the improvements alongside the provided examples.
 
 ### What you'll need
 
