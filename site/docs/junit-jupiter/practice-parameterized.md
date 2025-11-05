@@ -264,9 +264,9 @@ class ParameterizedExampleTest {
 }
 ```
 
-### Using Java Records
+### Using Java Records as Test Class
 
-For modern Java projects (Java 16+), you can use records for even more concise test data:
+For modern Java projects (Java 16+), you can make the entire test class a record for maximum conciseness:
 
 ```java title="ParameterizedExampleTest.java"
 package com.github.timtebeek.junit5;
@@ -282,70 +282,58 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.argumentSet;
 
 /**
- * Test class demonstrating JUnit 6's @ParameterizedClass with Java records.
- * Records provide a concise way to define immutable test data.
+ * Test class demonstrating JUnit 6's @ParameterizedClass as a Java record.
+ * The entire test class is a record - concise and expressive!
  */
 @ParameterizedClass
 @MethodSource("books")
-class ParameterizedExampleTest {
-
-    // Java record for test data - concise and immutable
-    record BookRecord(String title, String author, int year) {}
-
-    private final BookRecord book;
-
-    // Constructor injection with a record
-    ParameterizedExampleTest(BookRecord book) {
-        this.book = book;
-    }
+record ParameterizedExampleTest(String title, String author, int year) {
 
     static Stream<Arguments> books() {
         return Stream.of(
-                argumentSet("Effective Java", new BookRecord("Effective Java", "Joshua Bloch", 2001)),
-                argumentSet("Java Concurrency", new BookRecord("Java Concurrency in Practice", "Brian Goetz", 2006)),
-                argumentSet("Clean Code", new BookRecord("Clean Code", "Robert C. Martin", 2008))
+                argumentSet("Effective Java", "Effective Java", "Joshua Bloch", 2001),
+                argumentSet("Java Concurrency", "Java Concurrency in Practice", "Brian Goetz", 2006),
+                argumentSet("Clean Code", "Clean Code", "Robert C. Martin", 2008)
         );
     }
 
     @Test
-    void bookIsNotNull() {
-        assertThat(book).isNotNull();
-    }
-
-    @Test
     void bookHasTitle() {
-        assertThat(book.title()).isNotBlank();
+        assertThat(title).isNotBlank();
     }
 
     @Test
     void bookHasAuthor() {
-        assertThat(book.author()).isNotBlank();
+        assertThat(author).isNotBlank();
     }
 
     @Test
     void bookHasYear() {
-        assertThat(book.year()).isPositive();
+        assertThat(year).isPositive();
     }
 
     @Test
     void bookIsClassic() {
-        assertThat(book.year())
+        assertThat(year)
                 .as("Books published before 2010 are considered classics")
                 .isLessThan(2010);
     }
 
     @Test
     void bookToStringContainsTitle() {
-        assertThat(book.toString()).contains(book.title());
+        assertThat(toString()).contains(title);
     }
 }
 ```
 
-**Benefits of using records:**
-- Extremely concise syntax - no need for getters, constructors, equals/hashCode
-- Immutable by design - perfect for test data
-- Built-in `toString()` provides clear test output
-- Natural fit with parameterized tests
+**Benefits of using test class as a record:**
+- **Ultra-concise**: No explicit fields, constructor, or getters needed
+- **Direct parameter access**: The record components (`title`, `author`, `year`) are automatically available in all test methods
+- **Immutable by design**: Perfect for test data that shouldn't change
+- **Built-in `toString()`**: Provides clear test output showing all parameter values
+- **Natural fit**: Parameters flow directly from `@MethodSource` to record components to test methods
+
+This is the most elegant approach when your test class only needs to hold the parameterized data!
 
 </details>
 
