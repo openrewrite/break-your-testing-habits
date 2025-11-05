@@ -264,9 +264,92 @@ class ParameterizedExampleTest {
 }
 ```
 
+### Using Java Records
+
+For modern Java projects (Java 16+), you can use records for even more concise test data:
+
+```java title="ParameterizedExampleTest.java"
+package com.github.timtebeek.junit5;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.argumentSet;
+
+/**
+ * Test class demonstrating JUnit 6's @ParameterizedClass with Java records.
+ * Records provide a concise way to define immutable test data.
+ */
+@ParameterizedClass
+@MethodSource("books")
+class ParameterizedExampleTest {
+
+    // Java record for test data - concise and immutable
+    record BookRecord(String title, String author, int year) {}
+
+    private final BookRecord book;
+
+    // Constructor injection with a record
+    ParameterizedExampleTest(BookRecord book) {
+        this.book = book;
+    }
+
+    static Stream<Arguments> books() {
+        return Stream.of(
+                argumentSet("Effective Java", new BookRecord("Effective Java", "Joshua Bloch", 2001)),
+                argumentSet("Java Concurrency", new BookRecord("Java Concurrency in Practice", "Brian Goetz", 2006)),
+                argumentSet("Clean Code", new BookRecord("Clean Code", "Robert C. Martin", 2008))
+        );
+    }
+
+    @Test
+    void bookIsNotNull() {
+        assertThat(book).isNotNull();
+    }
+
+    @Test
+    void bookHasTitle() {
+        assertThat(book.title()).isNotBlank();
+    }
+
+    @Test
+    void bookHasAuthor() {
+        assertThat(book.author()).isNotBlank();
+    }
+
+    @Test
+    void bookHasYear() {
+        assertThat(book.year()).isPositive();
+    }
+
+    @Test
+    void bookIsClassic() {
+        assertThat(book.year())
+                .as("Books published before 2010 are considered classics")
+                .isLessThan(2010);
+    }
+
+    @Test
+    void bookToStringContainsTitle() {
+        assertThat(book.toString()).contains(book.title());
+    }
+}
+```
+
+**Benefits of using records:**
+- Extremely concise syntax - no need for getters, constructors, equals/hashCode
+- Immutable by design - perfect for test data
+- Built-in `toString()` provides clear test output
+- Natural fit with parameterized tests
+
 </details>
 
-### Benefits of @ParameterizedClass
+## Benefits of @ParameterizedClass
 
 After refactoring to use `@ParameterizedClass`, you'll notice:
 
