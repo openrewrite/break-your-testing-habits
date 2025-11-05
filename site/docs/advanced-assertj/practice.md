@@ -21,6 +21,8 @@ This test class works with a collection of orders and demonstrates several oppor
 
 ## Solution
 
+First try out the exercise yourself, then you can check out the solution below.
+
 <details>
 <summary>Click to see the refactored tests</summary>
 
