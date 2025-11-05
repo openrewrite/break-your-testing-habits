@@ -29,6 +29,7 @@ class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
+        // You do *not* need to change the content of this method, make sure to refactor *the tests*.
         OrderItem item1 = new OrderItem("P1", "Laptop", "Electronics", 1,
           new BigDecimal("1000.00"), new BigDecimal("1000.00"));
         OrderItem item2 = new OrderItem("P2", "Mouse", "Electronics", 2,
