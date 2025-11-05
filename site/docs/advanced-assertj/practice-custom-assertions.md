@@ -307,7 +307,7 @@ failWithMessage("Expected order ID to be <%s> but was <%s>",
 ## Try it yourself!
 
 1. Create the `OrderAssert` class
-2. Implement at least 5 assertion methods
+2. Implement at least 2-3 assertion methods (can add more later!)
 3. Refactor one of the existing tests to use your custom assertion
 4. Run the tests to see your custom assertions in action!
 
@@ -315,8 +315,3 @@ failWithMessage("Expected order ID to be <%s> but was <%s>",
 cd orders
 mvn test -Dtest=OrderServiceTest
 ```
-
-## Bonus Challenge
-
-Can you also create a custom assertion for `OrderItem`? Think about what properties and conditions you might want to assert on order items!
-
