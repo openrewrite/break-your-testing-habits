@@ -264,9 +264,80 @@ class ParameterizedExampleTest {
 }
 ```
 
+### Using Java Records as Test Class
+
+For modern Java projects (Java 16+), you can make the entire test class a record for maximum conciseness:
+
+```java title="ParameterizedExampleTest.java"
+package com.github.timtebeek.junit5;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedClass;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.params.provider.Arguments.argumentSet;
+
+/**
+ * Test class demonstrating JUnit 6's @ParameterizedClass as a Java record.
+ * The entire test class is a record - concise and expressive!
+ */
+@ParameterizedClass
+@MethodSource("books")
+record ParameterizedExampleTest(String title, String author, int year) {
+
+    static Stream<Arguments> books() {
+        return Stream.of(
+                argumentSet("Effective Java", "Effective Java", "Joshua Bloch", 2001),
+                argumentSet("Java Concurrency", "Java Concurrency in Practice", "Brian Goetz", 2006),
+                argumentSet("Clean Code", "Clean Code", "Robert C. Martin", 2008)
+        );
+    }
+
+    @Test
+    void bookHasTitle() {
+        assertThat(title).isNotBlank();
+    }
+
+    @Test
+    void bookHasAuthor() {
+        assertThat(author).isNotBlank();
+    }
+
+    @Test
+    void bookHasYear() {
+        assertThat(year).isPositive();
+    }
+
+    @Test
+    void bookIsClassic() {
+        assertThat(year)
+                .as("Books published before 2010 are considered classics")
+                .isLessThan(2010);
+    }
+
+    @Test
+    void bookToStringContainsTitle() {
+        assertThat(toString()).contains(title);
+    }
+}
+```
+
+**Benefits of using test class as a record:**
+- **Ultra-concise**: No explicit fields, constructor, or getters needed
+- **Direct parameter access**: The record components (`title`, `author`, `year`) are automatically available in all test methods
+- **Immutable by design**: Perfect for test data that shouldn't change
+- **Built-in `toString()`**: Provides clear test output showing all parameter values
+- **Natural fit**: Parameters flow directly from `@MethodSource` to record components to test methods
+
+This is the most elegant approach when your test class only needs to hold the parameterized data!
+
 </details>
 
-### Benefits of @ParameterizedClass
+## Benefits of @ParameterizedClass
 
 After refactoring to use `@ParameterizedClass`, you'll notice:
 
