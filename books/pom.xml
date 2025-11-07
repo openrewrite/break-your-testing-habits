@@ -19,6 +19,9 @@
         <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.testRelease>21</maven.compiler.testRelease>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Override the 5.12.2 provided by spring-boot-dependencies -->
+        <junit-jupiter.version>5.14.1</junit-jupiter.version>
     </properties>
 
     <dependencies>
