@@ -39,6 +39,5 @@ If you're not using IntelliJ IDEA Ultimate, you can run the above recipe using o
   recipeName="com.github.timtebeek.ChangeTestMethodSignatures"
   recipeDisplayName="Change test method signatures"
   artifact="org.openrewrite.recipe:rewrite-testing-frameworks"
-  showIntelliJ={false}
   requiresYamlInstall={true}
 />

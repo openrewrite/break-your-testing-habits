@@ -13,5 +13,4 @@ You can run the migration recipe using one of the following methods.
   recipeName="org.openrewrite.java.testing.junit.JUnit6BestPractices"
   recipeDisplayName="JUnit 6 Best Practices"
   artifact="org.openrewrite.recipe:rewrite-testing-frameworks"
-  showIntelliJ={false}
 />

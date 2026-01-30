@@ -12,7 +12,6 @@ import CodeBlock from '@theme/CodeBlock';
  * @param {string} props.artifact - The Maven artifact coordinates (e.g., "org.openrewrite.recipe:rewrite-testing-frameworks")
  * @param {string} [props.intellijWrapperName] - Optional custom wrapper name for rewrite.yml (defaults to derived from recipeDisplayName)
  * @param {string} [props.intellijDescription] - Optional description for the IntelliJ rewrite.yml
- * @param {boolean} [props.showIntelliJ=true] - Whether to show the IntelliJ tab
  * @param {boolean} [props.requiresYamlInstall=false] - Whether the recipe requires `mod config recipes yaml install`
  */
 export default function RunRecipe({
@@ -21,7 +20,6 @@ export default function RunRecipe({
   artifact,
   intellijWrapperName,
   intellijDescription,
-  showIntelliJ = true,
   requiresYamlInstall = false,
 }) {
   // Derive the IntelliJ wrapper name from the display name if not provided
@@ -210,15 +208,13 @@ recipeList:
           <li>Run <code>gradle rewriteRun</code> to run the recipe.</li>
         </ol>
       </TabItem>
-      {showIntelliJ && (
-        <TabItem value="intelliJ" label="IntelliJ IDEA Ultimate">
-          <p>You can run OpenRewrite recipes directly from IntelliJ IDEA Ultimate, by adding a <code>rewrite.yml</code> file to your project.</p>
-          <CodeBlock language="yaml" title="rewrite.yml">
-            {intellijYaml}
-          </CodeBlock>
-          <p>After adding the file, you should see a run icon in the left margin offering to run the recipe.</p>
-        </TabItem>
-      )}
+      <TabItem value="intelliJ" label="IntelliJ IDEA Ultimate">
+        <p>You can run OpenRewrite recipes directly from IntelliJ IDEA Ultimate, by adding a <code>rewrite.yml</code> file to your project.</p>
+        <CodeBlock language="yaml" title="rewrite.yml">
+          {intellijYaml}
+        </CodeBlock>
+        <p>After adding the file, you should see a run icon in the left margin offering to run the recipe.</p>
+      </TabItem>
     </Tabs>
   );
 }

@@ -40,6 +40,5 @@ If you're not using IntelliJ IDEA Ultimate, you can run the above recipe using o
   recipeName="com.github.timtebeek.Java21ForTests"
   recipeDisplayName="Java 21 for tests"
   artifact="org.openrewrite.recipe:rewrite-migrate-java"
-  showIntelliJ={false}
   requiresYamlInstall={true}
 />
