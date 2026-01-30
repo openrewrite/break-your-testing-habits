@@ -41,13 +41,8 @@ mvn test -pl orders
 
 ### Automated refactoring
 
-You can use OpenRewrite to automatically migrate JUnit assertions to AssertJ:
-
-```bash
-mvn -U org.openrewrite.maven:rewrite-maven-plugin:run \
-  -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-testing-frameworks:RELEASE \
-  -Drewrite.activeRecipes=org.openrewrite.java.testing.assertj.Assertj
-```
+You can use OpenRewrite to automatically migrate JUnit assertions to AssertJ.
+See the [AssertJ Best Practices](../upgrade-your-projects/assertj-best-practices.md) page for detailed instructions on running the recipe.
 
 ## What you'll learn
 
