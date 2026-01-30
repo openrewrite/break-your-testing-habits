@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
@@ -85,6 +86,17 @@ class AssertJTest {
           .usingRecursiveComparison()
           .ignoringFields("year")
           .isEqualTo(paperback);
+    }
+
+    @Test
+    void extractActualObject() {
+        List<Book> books = singletonList(new Book("Effective Java", "Joshua Bloch", 2001));
+
+        // Extract the actual object after assertions; avoids calling `get(0)` on the list
+        Book effectiveJava = assertThat(books)
+          .singleElement()
+          .hasFieldOrPropertyWithValue("title", "Effective Java")
+          .actual();
     }
 
     @Test
