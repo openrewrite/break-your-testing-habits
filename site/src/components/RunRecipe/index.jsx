@@ -209,11 +209,20 @@ recipeList:
         </ol>
       </TabItem>
       <TabItem value="intelliJ" label="IntelliJ IDEA Ultimate">
-        <p>You can run OpenRewrite recipes directly from IntelliJ IDEA Ultimate, by adding a <code>rewrite.yml</code> file to your project.</p>
-        <CodeBlock language="yaml" title="rewrite.yml">
-          {intellijYaml}
-        </CodeBlock>
-        <p>After adding the file, you should see a run icon in the left margin offering to run the recipe.</p>
+        {requiresYamlInstall ? (
+          <>
+            <p>You can run OpenRewrite recipes directly from IntelliJ IDEA Ultimate.</p>
+            <p>After adding the <code>rewrite.yml</code> file shown above to your project, you should see a run icon in the left margin offering to run the recipe.</p>
+          </>
+        ) : (
+          <>
+            <p>You can run OpenRewrite recipes directly from IntelliJ IDEA Ultimate, by adding a <code>rewrite.yml</code> file to your project.</p>
+            <CodeBlock language="yaml" title="rewrite.yml">
+              {intellijYaml}
+            </CodeBlock>
+            <p>After adding the file, you should see a run icon in the left margin offering to run the recipe.</p>
+          </>
+        )}
       </TabItem>
     </Tabs>
   );
