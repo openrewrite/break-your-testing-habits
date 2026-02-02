@@ -66,6 +66,13 @@ class ChainedAssertJTest {
                         new Book("Java Concurrency in Practice", "Brian Goetz", 2006),
                         new Book("Clean Code", "Robert C. Martin", 2008))
                 .doesNotContain(new Book("Java 8 in Action", "Raoul-Gabriel Urma", 2014));
+
+        // Or even shorter:
+        assertThat(books)
+                .containsExactly(
+                        new Book("Effective Java", "Joshua Bloch", 2001),
+                        new Book("Java Concurrency in Practice", "Brian Goetz", 2006),
+                        new Book("Clean Code", "Robert C. Martin", 2008));
     }
 }
 ```
