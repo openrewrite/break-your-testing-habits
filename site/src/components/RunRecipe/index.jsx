@@ -211,12 +211,12 @@ recipeList:
       <TabItem value="intelliJ" label="IntelliJ IDEA Ultimate">
         {requiresYamlInstall ? (
           <>
-            <p>You can run OpenRewrite recipes directly from IntelliJ IDEA, after [installing the OpenRewrite plugin](https://plugins.jetbrains.com/plugin/23814-openrewrite).</p>
+              <p>You can run OpenRewrite recipes directly from IntelliJ IDEA, after <a href="https://plugins.jetbrains.com/plugin/23814-openrewrite">installing the OpenRewrite plugin</a>.</p>
             <p>After adding the <code>rewrite.yml</code> file shown above to your project, you should see a run icon in the left margin offering to run the recipe.</p>
           </>
         ) : (
           <>
-            <p>You can run OpenRewrite recipes directly from IntelliJ IDEA Ultimate, after [installing the OpenRewrite plugin](https://plugins.jetbrains.com/plugin/23814-openrewrite), by adding a <code>rewrite.yml</code> file to your project.</p>
+            <p>You can run OpenRewrite recipes directly from IntelliJ IDEA Ultimate, after <a href="https://plugins.jetbrains.com/plugin/23814-openrewrite">installing the OpenRewrite plugin</a>, by adding a <code>rewrite.yml</code> file to your project.</p>
             <CodeBlock language="yaml" title="rewrite.yml">
               {intellijYaml}
             </CodeBlock>
