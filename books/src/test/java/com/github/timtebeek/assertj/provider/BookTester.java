@@ -38,7 +38,6 @@ public class BookTester
         assertThat()
                 .isNotNull()
                 .author()
-                .describedAs("author")
                 .isEqualTo(author);
         return myself;
     }
@@ -47,7 +46,6 @@ public class BookTester
         assertThat()
                 .isNotNull()
                 .title()
-                .describedAs("title")
                 .isEqualTo(title);
         return myself;
     }
@@ -56,7 +54,6 @@ public class BookTester
         assertThat()
                 .isNotNull()
                 .year()
-                .describedAs("year")
                 .isEqualTo(year);
         return myself;
     }
