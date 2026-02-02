@@ -59,7 +59,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JUnitThreeTest {
 
     @Test
-    void testBundle() {
+    void bundle() {
         List<Book> books = new Bundle().getBooks();
 
         assertThat(books)
@@ -70,8 +70,16 @@ class JUnitThreeTest {
                         new Book("Clean Code", "Robert C. Martin", 2008))
                 .doesNotContain(new Book("Java 8 in Action", "Raoul-Gabriel Urma", 2014));
 
-        assertThat(books.get(0).getTitle())
-                .as("Title should match")
+        // Or even shorter:
+        assertThat(books)
+                .containsExactly(
+                        new Book("Effective Java", "Joshua Bloch", 2001),
+                        new Book("Java Concurrency in Practice", "Brian Goetz", 2006),
+                        new Book("Clean Code", "Robert C. Martin", 2008));
+
+        assertThat(books)
+                .first()
+                .extracting(Book::getTitle)
                 .isEqualTo("Effective Java");
     }
 }
