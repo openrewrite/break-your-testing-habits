@@ -129,6 +129,13 @@ class AssertListSize {
 
 AssertJ eliminates argument order confusion. The actual value is always the subject, and the assertion is always chained after it.
 
+When this test fails, AssertJ provides a clear and unambiguous error message:
+```
+java.lang.AssertionError:
+Expected size: 4 but was: 3 in:
+["a", "b", "c"]
+```
+
 :::
 
 </TabItem>
