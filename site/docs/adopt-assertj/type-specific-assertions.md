@@ -166,7 +166,7 @@ class DateAssertions {
     void dates() {
         assertTrue(now.isAfter(LocalDateTime.now().minusDays(1)));
         assertTrue(now.isBefore(LocalDateTime.now().plusDays(1)));
-        assertEquals(2025, today.getYear());
+        assertEquals(2026, today.getYear());
         assertTrue(today.getMonthValue() >= 1 && today.getMonthValue() <= 12);
     }
 }
@@ -202,9 +202,9 @@ class DateAssertions {
                 .hasYear(today.getYear());
 
         assertThat(today)
-                .hasYear(2025)
+                .hasYear(2026)
                 .isToday()
-                .isBetween(LocalDate.of(2025, 1, 1), LocalDate.of(2025, 12, 31));
+                .isBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31));
     }
 }
 ```
@@ -235,8 +235,8 @@ class DateToleranceAssertions {
 
     @Test
     void timestampWithinTolerance() {
-        LocalDateTime expected = LocalDateTime.of(2025, 10, 7, 12, 0, 0);
-        LocalDateTime actual = LocalDateTime.of(2025, 10, 7, 12, 0, 3);
+        LocalDateTime expected = LocalDateTime.of(2026, 10, 7, 12, 0, 0);
+        LocalDateTime actual = LocalDateTime.of(2026, 10, 7, 12, 0, 3);
 
         Duration diff = Duration.between(expected, actual);
         assertTrue(Math.abs(diff.getSeconds()) <= 5);
@@ -260,8 +260,8 @@ class DateToleranceAssertions {
 
     @Test
     void timestampWithinTolerance() {
-        LocalDateTime expected = LocalDateTime.of(2025, 10, 7, 12, 0, 0);
-        LocalDateTime actual = LocalDateTime.of(2025, 10, 7, 12, 0, 3);
+        LocalDateTime expected = LocalDateTime.of(2026, 10, 7, 12, 0, 0);
+        LocalDateTime actual = LocalDateTime.of(2026, 10, 7, 12, 0, 3);
 
         assertThat(actual).isCloseTo(expected, within(5, ChronoUnit.SECONDS));
     }
