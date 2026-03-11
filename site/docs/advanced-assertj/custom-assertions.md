@@ -344,9 +344,9 @@ class BookTest {
         Book book = new Book("Effective Java", "Joshua Bloch", 2001);
 
         assertThat(book).satisfies(
-                b -> BookTester.of(book).title().contains("Effective"),
-                b -> BookTester.of(book).author().contains("Bloch"),
-                b -> BookTester.of(book).year().isLessThan(2003)
+                b -> BookTester.of(b).title().contains("Effective"),
+                b -> BookTester.of(b).author().contains("Bloch"),
+                b -> BookTester.of(b).year().isLessThan(2003)
         );
     }
 }
