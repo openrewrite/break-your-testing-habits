@@ -54,6 +54,34 @@ Repeatedly extracting and asserting on the same properties across multiple tests
 </TabItem>
 <TabItem value="after" label="After">
 
+```java title="BookTest.java"
+import com.github.timtebeek.books.Book;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class BookTest {
+
+    @Test
+    void verifyBook() {
+        BookTester bookTester = BookTester.of(new Book("Effective Java", "Joshua Bloch", 2001));
+
+        assertThat(bookTester).title().contains("Effective");
+        assertThat(bookTester).author().contains("Bloch");
+        assertThat(bookTester).year().isLessThan(2003);
+    }
+
+    @Test
+    void verifyAnotherBook() {
+        BookTester bookTester = BookTester.of(new Book("Clean Code", "Robert C. Martin", 2008));
+
+        assertThat(bookTester).title().contains("Clean");
+        assertThat(bookTester).author().contains("Martin");
+        assertThat(bookTester).year().isLessThan(2010);
+    }
+}
+```
+
 ```java title="BookTester.java"
 import com.github.timtebeek.books.Book;
 import org.assertj.core.api.*;
@@ -87,34 +115,6 @@ public class BookTester extends AbstractObjectAssert<BookTester, Book>
 
     public AbstractIntegerAssert<?> year() {
         return Assertions.assertThat(book.getYear()).describedAs("year");
-    }
-}
-```
-
-```java title="BookTest.java"
-import com.github.timtebeek.books.Book;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-class BookTest {
-
-    @Test
-    void verifyBook() {
-        BookTester bookTester = BookTester.of(new Book("Effective Java", "Joshua Bloch", 2001));
-
-        assertThat(bookTester).title().contains("Effective");
-        assertThat(bookTester).author().contains("Bloch");
-        assertThat(bookTester).year().isLessThan(2003);
-    }
-
-    @Test
-    void verifyAnotherBook() {
-        BookTester bookTester = BookTester.of(new Book("Clean Code", "Robert C. Martin", 2008));
-
-        assertThat(bookTester).title().contains("Clean");
-        assertThat(bookTester).author().contains("Martin");
-        assertThat(bookTester).year().isLessThan(2010);
     }
 }
 ```
@@ -167,6 +167,26 @@ While the property accessors work well, exact match assertions can be even more 
 </TabItem>
 <TabItem value="after" label="After">
 
+```java title="BookTest.java"
+import com.github.timtebeek.books.Book;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class BookTest {
+
+    @Test
+    void verifyExactMatch() {
+        BookTester bookTester = BookTester.of(new Book("Effective Java", "Joshua Bloch", 2001));
+
+        assertThat(bookTester)
+                .hasTitle("Effective Java")
+                .hasAuthor("Joshua Bloch")
+                .hasYear(2001);
+    }
+}
+```
+
 ```java title="BookTester.java"
 public class BookTester extends AbstractObjectAssert<BookTester, Book>
         implements AssertProvider<BookTester> {
@@ -198,26 +218,6 @@ public class BookTester extends AbstractObjectAssert<BookTester, Book>
                 .describedAs("year")
                 .isEqualTo(year);
         return myself;
-    }
-}
-```
-
-```java title="BookTest.java"
-import com.github.timtebeek.books.Book;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-class BookTest {
-
-    @Test
-    void verifyExactMatch() {
-        BookTester bookTester = BookTester.of(new Book("Effective Java", "Joshua Bloch", 2001));
-
-        assertThat(bookTester)
-                .hasTitle("Effective Java")
-                .hasAuthor("Joshua Bloch")
-                .hasYear(2001);
     }
 }
 ```
