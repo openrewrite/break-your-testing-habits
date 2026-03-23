@@ -40,7 +40,7 @@ mod config recipes yaml install /path/to/your/rewrite.yml`
   const modRun = `mod run ~/workspace/ --recipe ${recipeName}`;
 
   // Maven CLI
-  const mavenCli = `mvn -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=${artifact}:RELEASE -Drewrite.activeRecipes=${recipeName} -Drewrite.exportDatatables=true`;
+  const mavenCli = `mvn -U org.openrewrite.maven:rewrite-maven-plugin:run --define rewrite.recipeArtifactCoordinates=${artifact}:RELEASE --define rewrite.activeRecipes=${recipeName} --define rewrite.exportDatatables=true`;
 
   // Maven POM
   const mavenPom = `<project>
