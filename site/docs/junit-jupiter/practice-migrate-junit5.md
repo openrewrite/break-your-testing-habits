@@ -41,7 +41,7 @@ mvn test -pl orders -Dtest=OrderValidatorTest
 mvn test -pl orders
 ```
 
-## Automated migration
+## What you'll learn
 
 By completing this exercise, you'll gain hands-on experience with:
 
@@ -49,6 +49,88 @@ By completing this exercise, you'll gain hands-on experience with:
 - Modernizing exception testing patterns.
 - Improving test readability and maintainability.
 - Understanding the benefits of JUnit 5 over JUnit 4.
+
+<details>
+<summary>Click to see the migrated test</summary>
+
+```java title="OrderValidatorTest.java"
+package com.github.timtebeek.orders;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class OrderValidatorTest {
+
+    private OrderValidator validator;
+    private Order validOrder;
+
+    @BeforeEach
+    void setUp() {
+        validator = new OrderValidator();
+
+        OrderItem item = new OrderItem(
+                "PROD-001", "Test Product", "Electronics",
+                2, new BigDecimal("50.00"), new BigDecimal("100.00"));
+
+        validOrder = new Order(
+                "ORD-001", "CUST-001", LocalDate.now(), "PENDING",
+                List.of(item),
+                new BigDecimal("100.00"), new BigDecimal("8.50"),
+                new BigDecimal("9.99"), BigDecimal.ZERO, new BigDecimal("118.49"));
+    }
+
+    @Test
+    void validOrderHasNoErrors() {
+        List<String> errors = validator.validate(validOrder);
+        assertThat(errors).isEmpty();
+        assertThat(validator.isValid(validOrder)).isTrue();
+    }
+
+    @Test
+    void nullOrderReturnsError() {
+        assertThatCode(() -> {
+            List<String> errors = validator.validate(null);
+            assertThat(errors)
+                    .hasSize(1)
+                    .first()
+                    .asString()
+                    .containsIgnoringCase("null");
+        }).doesNotThrowAnyException();
+    }
+
+    @Test
+    void orderWithEmptyItemsIsInvalid() {
+        Order emptyItemsOrder = new Order(
+                "ORD-002", "CUST-001", LocalDate.now(), "PENDING",
+                Collections.emptyList(),
+                BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO,
+                BigDecimal.ZERO, BigDecimal.ZERO);
+
+        List<String> errors = validator.validate(emptyItemsOrder);
+        assertThat(errors)
+                .isNotEmpty()
+                .anyMatch(error -> error.toLowerCase().contains("item"));
+    }
+}
+```
+
+**Key changes:**
+- `@Before` replaced with `@BeforeEach`, `@Test` now from `org.junit.jupiter.api`
+- `public` modifiers removed, `test` prefix removed from method names
+- Try-catch-fail replaced with `assertThatCode(...).doesNotThrowAnyException()`
+- Manual loop replaced with `anyMatch()` on the assertion
+- JUnit assertions replaced with AssertJ fluent assertions
+
+</details>
+
+## Automated migration
 
 ### Running the migration recipes
 

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 7
 ---
 
 # Practice: Improve Test Expressiveness
@@ -53,3 +53,76 @@ By completing this exercise, you'll gain hands-on experience with:
 - Handling BigDecimal comparisons elegantly.
 - Writing assertions that clearly convey test intent.
 - Creating better failure messages.
+
+<details>
+<summary>Click to see the refactored test</summary>
+
+```java title="DiscountCalculatorTest.java"
+package com.github.timtebeek.orders;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.math.BigDecimal;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+class DiscountCalculatorTest {
+
+    private DiscountCalculator calculator;
+    private Customer silverCustomer;
+    private Customer goldCustomer;
+
+    @BeforeEach
+    void setUp() {
+        calculator = new DiscountCalculator();
+
+        Address address = new Address("123 Main St", "Springfield", "IL", "62701", "USA");
+
+        silverCustomer = new Customer("C002", "silver@example.com", "Silver User", address, "SILVER");
+        goldCustomer = new Customer("C003", "gold@example.com", "Gold User", address, "GOLD");
+    }
+
+    @Test
+    void goldCustomerDiscount() {
+        BigDecimal subtotal = new BigDecimal("300.00");
+        BigDecimal discount = calculator.calculateLoyaltyDiscount(goldCustomer, subtotal);
+
+        assertThat(discount)
+                .isEqualByComparingTo(new BigDecimal("45.00"))
+                .isGreaterThan(new BigDecimal("20.00"))
+                .isLessThan(new BigDecimal("50.00"));
+    }
+
+    @Test
+    void totalDiscountCombinesLoyaltyAndBulk() {
+        BigDecimal subtotal = new BigDecimal("600.00");
+        BigDecimal totalDiscount = calculator.calculateTotalDiscount(goldCustomer, subtotal);
+
+        // Gold customer gets 15% = 90.00
+        // Bulk discount gets 5% = 30.00
+        // Total should be 120.00
+        assertThat(totalDiscount)
+                .isEqualByComparingTo(new BigDecimal("120.00"))
+                .isBetween(new BigDecimal("100.00"), new BigDecimal("150.00"));
+    }
+
+    @Test
+    void discountScaleIsCorrect() {
+        BigDecimal subtotal = new BigDecimal("123.45");
+        BigDecimal discount = calculator.calculateLoyaltyDiscount(silverCustomer, subtotal);
+
+        assertThat(discount)
+                .hasScaleOf(2)
+                .hasToString(discount.toPlainString());
+    }
+}
+```
+
+**Key changes:**
+- `assertNotNull` + `assertEquals(0, x.compareTo(y))` replaced with `assertThat(x).isEqualByComparingTo(y)` (scale-insensitive BigDecimal comparison)
+- `assertTrue(x.compareTo(y) > 0)` replaced with `assertThat(x).isGreaterThan(y)`
+- Range checks combined using `isBetween()`
+- Multiple assertions on the same value chained into a single fluent statement
+- Redundant `assertNotNull` calls removed (AssertJ fails clearly on null)
+
+</details>

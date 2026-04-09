@@ -1,5 +1,5 @@
 ---
-sidebar_position: 5
+sidebar_position: 4
 ---
 
 # Migrate to AssertJ
@@ -12,6 +12,21 @@ This recipe contains many Refaster rules from [Error Prone Support](https://erro
 See the [AssertJ Best Practices](../upgrade-your-projects/assertj-best-practices.md) page for detailed instructions on running the recipe with Moderne CLI, Maven, Gradle, or IntelliJ IDEA.
 
 :::
+
+## What to expect
+
+The recipe will automatically convert JUnit and Hamcrest assertions to their AssertJ equivalents. Typical changes include:
+
+- `assertEquals(expected, actual)` becomes `assertThat(actual).isEqualTo(expected)`
+- `assertTrue(list.contains(x))` becomes `assertThat(list).contains(x)`
+- `assertNotNull(value)` followed by `assertEquals(...)` becomes a single chained assertion
+- Hamcrest `assertThat(value, is(...))` becomes `assertThat(value).isEqualTo(...)`
+- Existing AssertJ assertions are also improved, e.g. by chaining separate assertions and removing redundant null checks
+
+Most transformations are safe to merge without manual review. However, you should check:
+- **Custom Hamcrest matchers** -- these won't be converted automatically
+- **Assertion messages** -- the recipe preserves them via `.as(...)`, but phrasing may read differently in the fluent style
+- **BigDecimal comparisons** -- `assertEquals` with BigDecimal uses `.equals()` (scale-sensitive), while AssertJ's `isEqualTo` does the same; use `isEqualByComparingTo` if you want scale-insensitive comparison
 
 ## Exercise A
 
