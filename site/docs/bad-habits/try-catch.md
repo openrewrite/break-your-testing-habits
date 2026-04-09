@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 Using try/catch blocks with `fail()` calls to test for exceptions is an awkward outdated pattern.
 JUnit4 introduced the `@Test(expected=...)` annotation parameter to simplify this pattern, but it had its own limitations.
-An alternative `@Rule ExpectedException` approach was also available, but it was more verbose and more disconnected.
+An alternative [`@Rule ExpectedException`](../old-habits/junit4.md#expectedexception-rule) approach was also available, but it was more verbose and more disconnected.
 
 <Tabs>
 <TabItem value="before" label="Before">
