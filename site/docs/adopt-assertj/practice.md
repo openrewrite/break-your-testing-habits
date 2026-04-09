@@ -113,7 +113,8 @@ class DiscountCalculatorTest {
 
         assertThat(discount)
                 .hasScaleOf(2)
-                .hasToString(discount.toPlainString());
+                .asString()
+                .matches("\\d+\\.\\d{2}");
     }
 }
 ```
