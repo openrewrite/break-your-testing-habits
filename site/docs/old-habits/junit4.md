@@ -21,29 +21,14 @@ This restriction was removed in JUnit 5, where package-private visibility is suf
 ```java title="JUnitFourTest.java"
 import org.junit.Test;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class JUnitFourTest {
 
     @Test
-    public void bundle() {
-        List<Book> books = new Bundle().getBooks();
-
-        assertNotNull(books);
-        assertEquals(3, books.size());
-        assertTrue(books.contains(new Book("Effective Java", "Joshua Bloch", 2001)));
-        assertTrue(books.contains(new Book("Java Concurrency in Practice", "Brian Goetz", 2006)));
-        assertTrue(books.contains(new Book("Clean Code", "Robert C. Martin", 2008)));
-        assertFalse(books.contains(new Book("Java 8 in Action", "Raoul-Gabriel Urma", 2014)));
-
-        String expectedTitle = books.get(0).getTitle();
-        assertNotNull("Title not null", expectedTitle);
-        assertEquals("Title should match", "Effective Java", expectedTitle);
+    public void greeting() {
+        String greeting = new Greeter().greet("World");
+        assertEquals("Hello, World!", greeting);
     }
 }
 ```
@@ -51,7 +36,6 @@ public class JUnitFourTest {
 :::warning
 
 JUnit 4 requires test classes and methods to be public, adding unnecessary boilerplate.
-The basic assertion library also makes tests verbose and less expressive.
 
 :::
 
@@ -61,27 +45,14 @@ The basic assertion library also makes tests verbose and less expressive.
 ```java title="JUnitFourTest.java"
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JUnitFourTest {
 
     @Test
-    void bundle() {
-        List<Book> books = new Bundle().getBooks();
-
-        assertThat(books)
-                .hasSize(3)
-                .contains(
-                        new Book("Effective Java", "Joshua Bloch", 2001),
-                        new Book("Java Concurrency in Practice", "Brian Goetz", 2006),
-                        new Book("Clean Code", "Robert C. Martin", 2008))
-                .doesNotContain(new Book("Java 8 in Action", "Raoul-Gabriel Urma", 2014));
-
-        assertThat(books.get(0).getTitle())
-                .as("Title should match")
-                .isEqualTo("Effective Java");
+    void greeting() {
+        String greeting = new Greeter().greet("World");
+        assertThat(greeting).isEqualTo("Hello, World!");
     }
 }
 ```
@@ -89,79 +60,27 @@ class JUnitFourTest {
 :::tip
 
 JUnit 5 allows package-private test classes and methods, reducing boilerplate.
-Combined with AssertJ, tests become more concise and expressive.
 
 :::
 
 </TabItem>
 </Tabs>
+
+For a full comparison of JUnit assertion expressiveness before and after migrating to AssertJ, see [JUnit 3 - Limited expressiveness](junit3.md#limited-expressiveness).
 
 ## Backwards argument order
 
-JUnit 4 improved on JUnit 3 by standardizing argument order, but it's still backwards compared to JUnit 5.
-In JUnit 4, the expected value comes first, while in JUnit 5 the actual value comes first to match natural reading order.
+JUnit 4's argument order conventions are inconsistent and error-prone.
+For example, `assertNotNull` takes the value first and message second, while `assertEquals` takes message first, then expected, then actual.
+This inconsistency carries over when upgrading to JUnit 5 without fixing argument order.
 
-<Tabs>
-<TabItem value="before" label="Before">
-
-```java title="JUnitFourTest.java"
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-public class JUnitFourTest {
-
-    @Test
-    public void incorrectArgumentOrder() {
-        String actualTitle = new Bundle().getBooks().get(0).getTitle();
-        assertNotNull(actualTitle, "Title not null");
-        assertEquals("Title should match", actualTitle, "Effective Java");
-    }
-}
-```
-
-:::danger
-
-In JUnit 4, `assertNotNull` takes the value first and message second, while `assertEquals` takes message first, then expected, then actual.
-This inconsistency leads to errors. The test above will incorrectly pass because it's comparing the actual title to the message string.
-
-:::
-
-</TabItem>
-<TabItem value="after" label="After">
-
-```java title="JUnitFourTest.java"
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-class JUnitFourTest {
-
-    @Test
-    void incorrectArgumentOrder() {
-        String actualTitle = new Bundle().getBooks().get(0).getTitle();
-        assertThat(actualTitle)
-                .as("Title should match")
-                .isNotNull()
-                .isEqualTo("Effective Java");
-    }
-}
-```
-
-:::tip
-
-AssertJ eliminates argument order confusion with its fluent API that always starts with the actual value.
-
-:::
-
-</TabItem>
-</Tabs>
+For detailed examples of how backwards argument order leads to confusing failures and silently passing tests, see [Backwards](../bad-habits/backwards.md).
 
 ## ExpectedException rule
 
 JUnit 4 introduced the `@Rule ExpectedException` to test for exceptions, which was an improvement over try/catch blocks.
 However, it's disconnected from the code that throws the exception and can lead to confusing test logic.
+For the even older try/catch with `fail()` pattern, see [Try/Catch fail](../bad-habits/try-catch.md).
 
 <Tabs>
 <TabItem value="before" label="Before">
