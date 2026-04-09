@@ -6,10 +6,9 @@ import TabItem from '@theme/TabItem';
 
 # Backwards
 
-Between JUnit 4 and JUnit 5 the order of arguments in assertions was swapped to improve readability.
-In JUnit 4 the expected value came second, while in JUnit 5 it comes first.
-This change was made to align with the natural reading order of "actual value should be expected value".
-There is a danger though for folks who upgraded without changing their existing tests, that the arguments are now in the wrong order.
+In both JUnit 4 and JUnit 5, `assertEquals(expected, actual)` expects the expected value first and the actual value second.
+However, the optional _message_ parameter moved from the first position in JUnit 4 to the last in JUnit 5.
+This subtle change, combined with the common mistake of putting actual before expected, leads to confusing failure messages and even silently passing tests.
 
 ## Confusing failure messages
 This can lead to confusing error messages when tests fail, as the expected and actual values will be reported incorrectly.
@@ -37,7 +36,7 @@ class ArgumentOrderTest {
 
 :::warning
 
-Warning: The arguments to `assertEquals` are in the wrong order. The actual value should be the first argument, and the expected value should be the second argument.
+Warning: The arguments to `assertEquals` are in the wrong order. The expected value should be the first argument, and the actual value should be the second argument: `assertEquals(4, list.size())`.
 
 :::
 
