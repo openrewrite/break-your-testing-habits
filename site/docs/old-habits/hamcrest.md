@@ -14,9 +14,82 @@ The matcher-based approach requires many static imports, has less discoverable A
 
 Hamcrest requires composing matchers with `is()`, `not()`, and `nullValue()` to express simple assertions.
 This leads to verbose, nested calls that are harder to read than fluent assertions.
-For example, a simple null check becomes `assertThat(value, is(not(nullValue())))` instead of AssertJ's `assertThat(value).isNotNull()`.
 
-For a full side-by-side comparison of verbose assertions versus AssertJ, see [JUnit 3 - Limited expressiveness](junit3.md#limited-expressiveness).
+<Tabs>
+<TabItem value="before" label="Before">
+
+```java title="HamcrestTest.java"
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+
+class HamcrestTest {
+
+    @Test
+    void bundle() {
+        List<Book> books = new Bundle().getBooks();
+
+        assertThat(books, is(not(nullValue())));
+        assertThat(books, hasSize(3));
+        assertThat(books, hasItem(new Book("Effective Java", "Joshua Bloch", 2001)));
+        assertThat(books, hasItem(new Book("Java Concurrency in Practice", "Brian Goetz", 2006)));
+        assertThat(books, hasItem(new Book("Clean Code", "Robert C. Martin", 2008)));
+        assertThat(books, not(hasItem(new Book("Java 8 in Action", "Raoul-Gabriel Urma", 2014))));
+    }
+}
+```
+
+:::warning
+
+Hamcrest requires numerous static imports and verbose matcher composition like `is(not(nullValue()))`.
+Each assertion is a separate statement, making the test longer and harder to maintain.
+
+:::
+
+</TabItem>
+<TabItem value="after" label="After">
+
+```java title="HamcrestTest.java"
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+class HamcrestTest {
+
+    @Test
+    void bundle() {
+        List<Book> books = new Bundle().getBooks();
+
+        assertThat(books)
+                .isNotNull()
+                .hasSize(3)
+                .contains(
+                        new Book("Effective Java", "Joshua Bloch", 2001),
+                        new Book("Java Concurrency in Practice", "Brian Goetz", 2006),
+                        new Book("Clean Code", "Robert C. Martin", 2008))
+                .doesNotContain(new Book("Java 8 in Action", "Raoul-Gabriel Urma", 2014));
+    }
+}
+```
+
+:::tip
+
+AssertJ's fluent API chains multiple assertions together, making tests more concise and readable.
+IDE autocomplete makes it easy to discover available assertions without memorizing static imports.
+
+:::
+
+</TabItem>
+</Tabs>
 
 ## Confusing matcher semantics
 
