@@ -68,7 +68,7 @@ mod config recipes yaml install /path/to/your/rewrite.yml`
   </build>
 </project>`;
 
-  // Gradle init script
+  // Gradle init script (Groovy)
   const gradleInit = `initscript {
     repositories {
         maven { url "https://plugins.gradle.org/m2" }
@@ -81,6 +81,31 @@ rootProject {
         rewrite("${artifact}:latest.release")
     }
     rewrite {
+        activeRecipe("${recipeName}")
+        setExportDatatables(true)
+    }
+    afterEvaluate {
+        if (repositories.isEmpty()) {
+            repositories {
+                mavenCentral()
+            }
+        }
+    }
+}`;
+
+  // Gradle init script (Kotlin)
+  const gradleInitKts = `initscript {
+    repositories {
+        maven { url = uri("https://plugins.gradle.org/m2") }
+    }
+    dependencies { classpath("org.openrewrite:plugin:latest.release") }
+}
+rootProject {
+    plugins.apply(org.openrewrite.gradle.RewritePlugin::class.java)
+    dependencies {
+        add("rewrite", "${artifact}:latest.release")
+    }
+    extensions.configure<org.openrewrite.gradle.RewriteExtension> {
         activeRecipe("${recipeName}")
         setExportDatatables(true)
     }
@@ -192,6 +217,23 @@ recipeList:
             Run the recipe.
             <CodeBlock language="shell" title="shell">
               gradle --init-script init.gradle rewriteRun
+            </CodeBlock>
+          </li>
+        </ol>
+      </TabItem>
+      <TabItem value="gradle-init-script-kts" label="Gradle init script (Kotlin)">
+        <p>Gradle init scripts are a good way to try out a recipe without modifying your <code>build.gradle.kts</code> file.</p>
+        <ol>
+          <li>
+            Create a file named <code>init.gradle.kts</code> in the root of your project.
+            <CodeBlock language="kotlin" title="init.gradle.kts">
+              {gradleInitKts}
+            </CodeBlock>
+          </li>
+          <li>
+            Run the recipe.
+            <CodeBlock language="shell" title="shell">
+              gradle --init-script init.gradle.kts rewriteRun
             </CodeBlock>
           </li>
         </ol>
