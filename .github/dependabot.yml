@@ -13,6 +13,10 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      openrewrite:
+        patterns:
+          - "org.openrewrite*:*"
   - package-ecosystem: "npm"
     directory: "/site"
     schedule:
