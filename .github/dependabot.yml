@@ -21,3 +21,7 @@ updates:
     directory: "/site"
     schedule:
       interval: "monthly"
+    groups:
+      docusaurus:
+        patterns:
+          - "@docusaurus/*"
