@@ -173,11 +173,11 @@ class AssertToAssertThatTest implements RewriteTest {
             }
             """,
             """
-            import org.assertj.core.api.Assertions;
+            import static org.assertj.core.api.Assertions.assertThat;
 
             class Test {
                 void test(Object obj) {
-                    Assertions.assertThat(obj).isNull();
+                    assertThat(obj).isNull();
                 }
             }
             """
