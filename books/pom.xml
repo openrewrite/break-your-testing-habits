@@ -55,6 +55,27 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>codegenome</id>
+            <name>Code Genome Project</name>
+            <url>https://artifacts.codegenomeproject.org/maven</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>codegenome</id>
+            <name>Code Genome Project</name>
+            <url>https://artifacts.codegenomeproject.org/maven</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
     <build>
         <plugins>
             <plugin>
