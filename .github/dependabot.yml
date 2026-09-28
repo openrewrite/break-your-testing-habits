@@ -8,15 +8,11 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
   - package-ecosystem: "maven"
     directory: "/"
     schedule:
-      interval: "weekly"
-    groups:
-      openrewrite:
-        patterns:
-          - "org.openrewrite*:*"
+      interval: "monthly"
   - package-ecosystem: "npm"
     directory: "/site"
     schedule:
